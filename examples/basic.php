@@ -16,9 +16,9 @@ $message = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valid = $captcha->verify($_POST['captcha'] ?? null);
 
+    // verify() uses the code up, so a wrong answer needs a new image
     if ($valid) {
         $message = 'Captcha is valid.';
-        $captcha->clear();
     } else {
         $message = 'Captcha is invalid.';
     }

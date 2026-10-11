@@ -81,9 +81,17 @@ if (!$captcha->verify($_POST['captcha'] ?? null)) {
 }
 ```
 
+Each code can be checked **once**. `verify()` removes the stored code whether
+the answer was right or wrong, so a script can't keep guessing the same code
+and a submitted form can't be replayed. After a failed check, show the form
+again with a new image.
+
 ---
 
-### 5. Clear after success
+### 5. Clearing the code yourself
+
+`verify()` already does this. Call `clear()` only when you want to throw a code
+away without checking it:
 
 ```php
 $captcha->clear();
@@ -119,6 +127,7 @@ return [
     'session_key' => 'flocms_captcha',
     'characters' => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
     'case_sensitive' => false,
+    'single_use' => true,
     'fonts' => [
         __DIR__ . '/../public/fonts/Acme.ttf',
         __DIR__ . '/../public/fonts/PlayfairDisplay.ttf',
@@ -135,7 +144,7 @@ return [
 2. The string is stored in session  
 3. An image is rendered using GD  
 4. User submits input  
-5. Input is compared securely using `hash_equals`  
+5. Input is compared securely using `hash_equals`, and the code is removed  
 
 ---
 
@@ -144,6 +153,9 @@ return [
 - Uses `random_int()` for cryptographically secure randomness  
 - Uses `hash_equals()` to prevent timing attacks  
 - Case-insensitive comparison by default (configurable)  
+- Single-use codes: every `verify()` removes the code, right or wrong. Set
+  `'single_use' => false` only if you must check the same code twice and
+  call `clear()` yourself  
 - Always use **CSRF protection alongside captcha**  
 
 ---

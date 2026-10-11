@@ -11,6 +11,8 @@ return [
     'session_key' => 'flocms_captcha',
     'characters' => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
     'case_sensitive' => false,
+    // Every verify() removes the code, right or wrong, so it can't be guessed by retrying
+    'single_use' => true,
     'fonts' => [
         __DIR__ . '/../public/fonts/Acme.ttf',
         __DIR__ . '/../public/fonts/PlayfairDisplay.ttf',
