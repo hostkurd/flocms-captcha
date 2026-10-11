@@ -39,9 +39,18 @@ class Captcha
         return $_SESSION[$this->config['session_key']] ?? null;
     }
 
+    /**
+     * Check the visitor's answer. With 'single_use' (the default) the stored
+     * code is removed by every check, right or wrong, so it can't be guessed
+     * by trying again; the next form needs a new image.
+     */
     public function verify(?string $input): bool
     {
         $stored = $this->getStoredText();
+
+        if ((bool) ($this->config['single_use'] ?? true)) {
+            $this->clear();
+        }
 
         if ($stored === null || $input === null || trim($input) === '') {
             return false;
